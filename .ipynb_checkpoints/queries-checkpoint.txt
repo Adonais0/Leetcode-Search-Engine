@@ -1,0 +1,6 @@
+difficult question with dynamic programming
+java
+binary search
+python slide window
+3sum
+police
