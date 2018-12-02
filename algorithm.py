@@ -40,6 +40,7 @@ def loadPickle(filename):
 	return dictfile
 
 related_questions_top3=loadPickle('related_questions_top3')
+question_to_id=loadPickle('question_to_id')
 meta=loadPickle('meta_stop')
 weighted_scores=loadPickle('weighted_scores')
 f=open('documents_id.txt')
@@ -121,7 +122,7 @@ def get_weighted_score(query_meta,i,weighted_scores):
     return score
 
 def processing_query(query):
-    
+
     if 'dynamic programming' in query:
         query+=' dp'
     elif 'dp' in query:
@@ -192,16 +193,19 @@ def show_result(my_frame,nums=5):
         my_prob['title']=leetcode_questions[each]['problem_title']
         my_prob['difficulty']=leetcode_questions[each]['problem_difficult']
         my_prob['tags']=problem_descriptions[each]['problem_tags']
-        my_prob['url']=problem_descriptions[each]['problem_url']
+        my_prob['url']=leetcode_questions[each]['problem_url']
         print('Q:',leetcode_questions[each]['problem_title'])
         rq_lists=[]
         if leetcode_questions[each]['problem_title'] in related_questions_top3:
             r_qs=related_questions_top3[leetcode_questions[each]['problem_title']]
+            n=0
             for r_q in r_qs:
                 r_q_dict={}
-                r_q_dict['title']=r_q[0]
-                r_q_dict['link']=leetcode_questions[r_q[0]]['problem_url']
-                rq_lists.append(r_q_dict)
+                if (str(question_to_id[r_q[0]]) in leetcode_questions) and n<3:
+                    n+=1
+                    r_q_dict['title']=r_q[0]
+                    r_q_dict['link']=leetcode_questions[str(question_to_id[r_q[0]])]['problem_url']
+                    rq_lists.append(r_q_dict)
         my_prob['recommandations']=rq_lists
         discussion_list=[]
         for d in problem_dict[each]:
@@ -222,3 +226,5 @@ def search_and_show(query):
     global meta,weighted_scores,query_logs,ranker
     d_scores,my_frame=do_search(query,meta,weighted_scores)
     return show_result(my_frame)
+
+search_and_show("3Sum")
