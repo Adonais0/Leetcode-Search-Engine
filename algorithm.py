@@ -39,6 +39,7 @@ def loadPickle(filename):
 	f.close()
 	return dictfile
 
+related_questions_top3=loadPickle('related_questions_top3')
 meta=loadPickle('meta_stop')
 weighted_scores=loadPickle('weighted_scores')
 f=open('documents_id.txt')
@@ -88,6 +89,7 @@ def get_weighted_score(query_meta,i,weighted_scores):
     difficulty_score=weighted_scores['difficulty_score']
     title_score=weighted_scores['title_score']
     keywords_in_discussion=weighted_scores['keywords_in_discussion']
+
     for t in tag_score:
         if t in query_meta['query']:
             if str(i) in tag_score[t]:
@@ -106,10 +108,10 @@ def get_weighted_score(query_meta,i,weighted_scores):
                 score+=weighted_scores['prog_lan_score'][w][i]*0.3
         if w in weighted_scores['difficulty_score']:
             if str(i) in weighted_scores['difficulty_score'][w]:
-                score+=weighted_scores['difficulty_score'][w][str(i)]*0.1
+                score+=weighted_scores['difficulty_score'][w][str(i)]*0.3
         elif w=='difficult':
             if str(i) in weighted_scores['difficulty_score']['hard']:
-                score+=weighted_scores['difficulty_score']['hard'][str(i)]*0.1
+                score+=weighted_scores['difficulty_score']['hard'][str(i)]*0.3
 
     vote_score=weighted_scores['vote_score']
     view_score=weighted_scores['view_score']
@@ -118,11 +120,24 @@ def get_weighted_score(query_meta,i,weighted_scores):
 
     return score
 
-def get_query_meta(query):
+def processing_query(query):
+    
     if 'dynamic programming' in query:
         query+=' dp'
     elif 'dp' in query:
         query+=' dynamic programming'
+    if 'depth first search' in query:
+        query+=' dfs'
+    elif 'dfs' in query:
+        query+=' depth first search'
+    if 'breath first search' in query:
+        query+=' bfs'
+    elif 'bfs' in query:
+        query+=' breath first search'
+    return query
+
+def get_query_meta(query):
+    query=processing_query(query)
 
     if query in query_logs:
         return query_logs[query]
@@ -158,29 +173,52 @@ def do_search(query,meta,weighted_scores):
     my_frame=pd.DataFrame.from_dict(d_scores).T
     my_frame.columns=['scores']
     my_frame=my_frame.sort_values(by='scores',ascending=False)
-    # print(my_frame.head(10))
-#     print("related query:")
-#     RQ_len=5
-#     if len(query_meta['related_query'])<5:
-#         RQ_len=len(query_meta['related_query'])
-#     for i in range(RQ_len):
-#         print(query_meta['related_query'][i], end=" ")
     return d_scores,my_frame
+
+def show_result(my_frame,nums=5):
+    id_=list(my_frame.head(nums).index.values)
+
+    problem_dict={}
+    for each in id_:
+        qid,did=document_map[str(each)].split("-")
+        if str(qid) not in problem_dict:
+            problem_dict[str(qid)]=[int(did)]
+        else:
+            problem_dict[str(qid)].append(int(did))
+
+    problem_list=[]
+    for each in problem_dict:
+        my_prob={}
+        my_prob['title']=leetcode_questions[each]['problem_title']
+        my_prob['difficulty']=leetcode_questions[each]['problem_difficult']
+        my_prob['tags']=problem_descriptions[each]['problem_tags']
+        my_prob['url']=problem_descriptions[each]['problem_url']
+        print('Q:',leetcode_questions[each]['problem_title'])
+        rq_lists=[]
+        if leetcode_questions[each]['problem_title'] in related_questions_top3:
+            r_qs=related_questions_top3[leetcode_questions[each]['problem_title']]
+            for r_q in r_qs:
+                r_q_dict={}
+                r_q_dict['title']=r_q[0]
+                r_q_dict['link']=leetcode_questions[r_q[0]]['problem_url']
+                rq_lists.append(r_q_dict)
+        my_prob['recommandations']=rq_lists
+        discussion_list=[]
+        for d in problem_dict[each]:
+            discussion={}
+            discussion['discussion_title']=discussion_lists[each][d]['discussion_title']
+            discussion['url']=discussion_lists[each][d]['discussion_link']
+            print("\t",discussion_lists[each][d]['discussion_title'])
+            discussion_list.append(discussion)
+        my_prob['discussions']=discussion_list
+        problem_list.append(my_prob)
+    print(problem_list)
+    return problem_list
+
 
 ranker=bm25_ctf()
 query_logs={}
-query=input("What do you want to search?")
-while query:
+def search_and_show(query):
+    global meta,weighted_scores,query_logs,ranker
     d_scores,my_frame=do_search(query,meta,weighted_scores)
-    id_=list(my_frame.head(10).index.values)
-
-    for each in id_:
-        qid,did=document_map[str(each)].split("-")
-        print(discussion_lists[str(qid)][int(did)]['discussion_title'])
-        print(discussion_lists[str(qid)][int(did)]['discussion_link'])
-    #     print(leetcode_questions[str(qid)]['problem_title'])
-    #     print(leetcode_questions[str(qid)]['problem_url'])
-
-    #     print(leetcode_questions[str(qid)])
-    #     print(discussion_lists[str(qid)][int(did)])
-    query=input("What do you want to search?")
+    return show_result(my_frame)

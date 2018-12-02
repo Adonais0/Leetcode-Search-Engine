@@ -1,4 +1,5 @@
 from flask import Flask, render_template,request
+from algorithm import *
 
 app = Flask(__name__)
 
@@ -16,34 +17,8 @@ def result():
         searchContent = request.form['searchContent']
         print(searchContent)
 
-    problems = [
-        {
-            'title': '3sum problem',
-            'tags': ['tag1', 'tag2'],
-            'difficulty': 'hard',
-            'discussions': [
-                {'discussion_title': 'test discussion', 'url': 'https://leetcode.com/problems/integer-to-english-words/discuss/70625/My-clean-Java-solution-very-easy-to-understand'},
-                {'discussion_title': 'test discussion', 'url': 'https://leetcode.com/problems/integer-to-english-words/discuss/70625/My-clean-Java-solution-very-easy-to-understand'},
-                {'discussion_title': 'test discussion', 'url': 'https://leetcode.com/problems/integer-to-english-words/discuss/70625/My-clean-Java-solution-very-easy-to-understand'},
-            ],
-        },
-        {
-            'title': '3sum problem',
-            'tags': ['tag1', 'tag2'],
-            'difficulty': 'hard',
-            'discussions': [
-                {'discussion_title': 'test discussion', 'url': 'https://leetcode.com/problems/integer-to-english-words/discuss/70625/My-clean-Java-solution-very-easy-to-understand'},
-            ],
-        },
-        {
-            'title': '3sum problem',
-            'tags': ['tag1', 'tag2'],
-            'difficulty': 'hard',
-            'discussions': [
-                {'discussion_title': 'test discussion', 'url': 'https://leetcode.com/problems/integer-to-english-words/discuss/70625/My-clean-Java-solution-very-easy-to-understand'},
-            ],
-        },
-    ]
+    problems=search_and_show(searchContent)
+
     return render_template("result.html", problems = problems)
 
 if __name__ == '__main__':

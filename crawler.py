@@ -76,41 +76,46 @@ def crawl_leetcode_descriptions():
                 # problem_difficult=page_soup.find('div',class_='css-101rr4k').find('div',class_="css-ia03ri").text)
                 problem_description=all_problems.find('div',class_="content__eAC7").text
                 problem_tags=page_soup.find_all('a',class_="topic-tag__Hn49")
+                problem_related_qs=page_soup.find_all('div',class_="question__3owm")
                 problem_tag_list=[]
                 for tag in problem_tags:
                     problem_tag_list.append(tag.text)
+                problem_related_list=[]
+                for rq in problem_related_qs:
+                    problem_related_list.append(rq.text)
 
                 my_description['problem_name']=problem_name
                 my_description['problem_description']=problem_description
                 my_description['problem_tags']=problem_tag_list
+                my_description['related_questions']=problem_related_list
                 my_descriptions[str(problem_id)]=my_description
 
-    save_as_json(my_descriptions,"problem_descriptions.json")
+    save_as_json(my_descriptions,"problem_descriptions2.json")
     print(len(my_descriptions))
 
 # crawl_leetcode_problems()
 # crawl_leetcode_description_pages()
-# crawl_leetcode_descriptions()
+crawl_leetcode_descriptions()
 
-try:
-    cache_file = open('discussion_list3.json', 'r')
-    cache_contents = cache_file.read()
-    discussion_lists = json.loads(cache_contents)
-    cache_file.close()
-except:
-    print("something bad happens!")
-
-discussion_pages={}
-with Browser("chrome") as browser:
-    # Visit URL
-    for each in discussion_lists:
-        for i in range(len(discussion_lists[each])):
-            if 'discussion_link' in discussion_lists[each][i]:
-                url = discussion_lists[each][i]['discussion_link']
-                browser.visit(url)
-                # wait for 5 mins in order to load all pages
-                time.sleep(5)
-                content_page=browser.html
-                discussion_pages[str(each)+":"+str(i)]=content_page
-
-save_as_json(discussion_pages,'discussion_pages.json')
+# try:
+#     cache_file = open('discussion_list3.json', 'r')
+#     cache_contents = cache_file.read()
+#     discussion_lists = json.loads(cache_contents)
+#     cache_file.close()
+# except:
+#     print("something bad happens!")
+#
+# discussion_pages={}
+# with Browser("chrome") as browser:
+#     # Visit URL
+#     for each in discussion_lists:
+#         for i in range(len(discussion_lists[each])):
+#             if 'discussion_link' in discussion_lists[each][i]:
+#                 url = discussion_lists[each][i]['discussion_link']
+#                 browser.visit(url)
+#                 # wait for 5 mins in order to load all pages
+#                 time.sleep(5)
+#                 content_page=browser.html
+#                 discussion_pages[str(each)+":"+str(i)]=content_page
+#
+# save_as_json(discussion_pages,'discussion_pages.json')
