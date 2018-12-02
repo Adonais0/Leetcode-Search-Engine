@@ -15,12 +15,17 @@ def result():
     if request.method == 'POST':
         searchContent = request.form['searchContent']
         print(searchContent)
-
+        selectedLink = request.args.get('discuss')
+        print(selectedLink)
     problems = [
         {
             'title': '3sum problem',
             'tags': ['tag1', 'tag2'],
             'difficulty': 'hard',
+            'recommendations': [
+                {'title': 'integer to english words', 'link': 'https://leetcode.com/problems/integer-to-english-words/'},
+                {'title': 'integer to english words', 'link': 'https://leetcode.com/problems/integer-to-english-words/'},
+            ],
             'discussions': [
                 {'discussion_title': 'test discussion', 'url': 'https://leetcode.com/problems/integer-to-english-words/discuss/70625/My-clean-Java-solution-very-easy-to-understand'},
                 {'discussion_title': 'test discussion', 'url': 'https://leetcode.com/problems/integer-to-english-words/discuss/70625/My-clean-Java-solution-very-easy-to-understand'},

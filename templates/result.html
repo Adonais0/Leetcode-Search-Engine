@@ -5,8 +5,111 @@
     <title></title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="../static/style.css">
+    <style media="screen">
 
+    a {
+      border-bottom: 1px solid #000;
+      color: #000;
+    }
+
+    a:hover {
+      text-decoration: none;
+    }
+
+    body{
+      height: 100vh;
+      background:#5893d4;
+      color:white;
+      position: relative;
+      background-image: url('https://images.unsplash.com/photo-1506318164473-2dfd3ede3623?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=d7aca7e915a70f426aa75aacaa56c6d0&auto=format&fit=crop&w=2700&q=80');
+      background-size: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .container {
+      height: 100%;
+      opacity: .9;
+      color: #000;
+      background: #FFF;
+      height: auto;
+      padding: 0;
+      box-shadow: 2px 2px 10px 1px rgba(0,0,0,0.6);
+    }
+
+    .search-title {
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .row {
+      margin: 1em auto;
+    }
+
+    .searchBar {
+      max-width: 750px;
+      width: 600px;
+    }
+
+    button {
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      background-color: #2a6171 !important;
+      color: white;
+    }
+
+    .problem-item {
+      display: flex;
+      flex-direction: row;
+      box-shadow: 0 2px 2px rgba(0,0,0,0.6);
+      z-index: 2;
+      padding: 10px;
+    }
+
+    .tags {
+      margin-left: auto;
+    }
+
+    .tag, .difficulty {
+      padding: .25em;
+      border-radius: .3em;
+      border: 1px solid #DDD;
+      color: #999;
+      margin: .25em;
+      transition: .2s ease;
+    }
+
+    .tag:hover {
+      background-color: #999;
+      color: white;
+    }
+
+    .difficulty:hover {
+      background-color: #999;
+      color: white;
+    }
+
+    form {
+      margin: 0 auto;
+    }
+
+    .problem-content {
+      padding: 10px;
+      z-index: 1;
+      display: flex;
+      background-color: rgba(0,0,0,.1);
+    }
+
+    .discussions {
+      width: 70%;
+    }
+
+    .related-problems {
+      margin-left: auto;
+      width: 300px;
+      padding: 10px;
+    }
+    </style>
   </head>
   <body>
     <div class="container">
@@ -14,32 +117,42 @@
         <form class="" action="/result" method="POST">
           <div class="form-group">
             <div class="row">
-              <input class="searchBar" name="searchContent"></input>
-              <button type="submit" value="Submit!" >Search</button>
+              <input class="searchBar" placeholder="Search..." name="searchContent"></input>
+              <button class="btn btn-success" type="submit" value="Submit!" >Search</button>
             </div>
           </div>
         </form>
       </div>
+      <hr>
       <div class="results">
         {% for prob in problems %}
         <div class="problem-item">
-          <h1>{{ prob.title }}</h1>
+          <b class="problem-title">{{ prob.title }}</b>
           <div class="tags">
             {% for tag in prob['tags'] %}
-            <span>{{tag}}</span>
+            <span class="tag">{{tag}}</span>
             {% endfor %}
           </div>
-          <div class="difficulty">
-            <span>{{ prob['difficulty'] }}</span>
+          <div >
+            <span class="difficulty">{{ prob['difficulty'] }}</span>
           </div>
         </div>
-        <div class="discussions">
-          {% for dis in prob['discussions'] %}
-          <a href="{{ dis['url'] }}" target="_blank">{{ dis['discussion_title'] }}</a>
-          <hr>
-          {% endfor %}
+        <div class="problem-content">
+          <div class="discussions">
+            {% for dis in prob['discussions'] %}
+            <a href="{{ dis['url']}}" target="_blank">{{ dis['discussion_title'] }}</a>
+            <hr>
+            {% endfor %}
+          </div>
+          <div class="related-problems">
+            <b>Related Problems:</b>
+            <br>
+            {% for rec in prob['recommendations'] %}
+            <a href="{{ rec['link'] }}">{{ rec['title']}}</a>
+            <br>
+            {% endfor %}
+          </div>
         </div>
-        <hr>
         {% endfor %}
       </div>
     </div>
