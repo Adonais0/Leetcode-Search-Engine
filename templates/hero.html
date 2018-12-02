@@ -1,0 +1,35 @@
+<link rel="stylesheet" href="/static/style.css">
+<h1> HearthStone's Cards Analyze </h1>
+{% if myhero=="nochosen" %}
+<h2> Welcome to hearthstone card analyze page</h2>
+<h3> Which hero's top 10 decks do you want to see? </h3>
+<form action="/hero" method="POST" target="_blank" id="heroform">
+    Choose one of the heros:<br/>
+    {% for h in heros %}
+    <input type="radio" name="hero" value="{{h}}" required="required"/> {{h}}
+    {% endfor %}
+    <br/>
+    <input type="submit" name="submit" value="submit"/>
+    <br/>
+    <br/>
+</form>
+{% else %}
+<h2> {{myhero}}'s top 10 decks </h2>
+{% endif %}
+{% if myhero=="nochosen" %}
+{% else %}
+<form action="/deck" method="POST" target="_blank">
+    Choose one of the top decks:<br/>
+    {% for r in results %}
+    <input type="radio" name="deckname" value="{{r}}" required="required"/> {{r}} <br>
+    {% endfor %}
+    <br/>
+    <input type="text" name="chartname" value="" style="display: none;">
+    <input type="submit" value="submit"/>
+    <br/>
+    <br/>
+</form>
+{% endif %}
+<body>
+{{hero_pic|safe}}
+</body>

@@ -1,0 +1,50 @@
+body{
+	background:#2C2c2c;
+	color:white;
+}
+
+header{
+	color:#1995ad;
+	font:300 40px/60px Helvetica,Arial,sans-serif;
+	text-align: center;
+
+}
+
+nav a{
+	text-decoration: none;
+	color:white;
+	display:block;
+	padding:2% 10%;
+	margin:1% 10%;
+	border: 3px solid #ffffff;
+	border-radius: 30px;
+	background-color:#1995ad;
+}
+
+section{
+	padding:1% 5%;
+	margin:1% 10%;	
+}
+
+ol,.myClass{
+	border: 5px solid pink;	
+	padding: 20px 30px 20px 30px;
+
+}
+
+ol{
+	list-style-type:upper-alpha;
+}
+
+.myClass{
+	column-count:3;
+}
+
+img{
+	display:none;
+}
+
+footer{
+	text-transform: uppercase;
+	text-align: center;
+}

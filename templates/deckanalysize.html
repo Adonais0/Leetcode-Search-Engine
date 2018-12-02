@@ -1,0 +1,22 @@
+
+<link rel="stylesheet" href="/static/style.css">
+
+<h1> {{deckname}} <br>
+    {% if chartname == 'crystal_usage' %}Crystal Usage
+    {% elif chartname=='attack_health' %} Attack and Health
+    {% elif chartname=='race_barchart' %} Compositions
+    {% else %}
+    {% endif %}</h1>
+
+<form action="/deck" method="POST">
+    Choose the chart you want to see:<br/>
+    <input type="radio" name="chartname" value="crystal_usage" required="required"/> Crystal Usage <br/>
+    <input type="radio" name="chartname" value="attack_health" required="required"/> Attack and Health <br/>
+    <input type="radio" name="chartname" value="race_barchart" required="required"/> Compositions <br/>
+    <br/>
+    <input class="hidden" type="text" name="deckname" value="{{deckname|safe}}" style="display: none;">
+    <input type="submit" name="submit" value="sumbit"/>
+    <br/>
+    <br/>
+</form>
+{{mychart|safe}}
